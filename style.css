@@ -1,0 +1,49 @@
+body {
+    background-color: black;
+    display: flex;
+    justify-content: center;
+}
+.container {
+    position: relative;
+}
+.container canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+.key {
+    display: inline-block;
+    background-color: whitesmoke;
+    color: black;
+    /* vertical-align: super; */
+    padding: 3px;
+    border-radius: 5px;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+#ui {
+    display: none;
+    color: white;
+    padding: 30px;
+}
+.block-in-timeline {
+    background-color: whitesmoke;
+    border: 1px solid black;
+    border-radius: 4px;
+    color: black;
+    padding: 20px;
+    margin: 5px;
+}
+.time-selected {
+    background-color: red
+}
+#timeline, #website-info, #page-info {
+    border: 1px solid white;
+    border-radius: 4px;
+    padding: 10px;
+    margin: 10px;
+}
+.clicker {
+    position: absolute;
+    cursor: pointer;
+}
