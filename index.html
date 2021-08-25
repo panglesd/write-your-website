@@ -10,6 +10,7 @@
 	    <img src="blank_page.jpg" />
 	    <canvas width="1274" height="1643" id="canvas-menu"></canvas>
 	    <canvas width="1274" height="1643" id="canvas-content"></canvas>
+	    <div id="write-preventer"></div>
 	    <div id="click-container"></div>
 	</div>
 	<div id="ui">
@@ -242,15 +243,27 @@
 	 async function drawPage(page, speed = 1) {
 	     playing = true
 	     document.querySelector("#ui").style.backgroundColor = "green"
+	     document.querySelector("#write-preventer").style.pointerEvents = "auto"
 	     let new_speed = page.speed * speed
 	     for (const block of page.blocks) {
-		 if(cancel) return;
+		 if(cancel) {
+		     document.querySelector("#ui").style.backgroundColor = "black"
+		     document.querySelector("#write-preventer").style.pointerEvents = "none"
+		     playing = false
+		     return;
+		 }
 		 await waitFor(block.time_before, new_speed)
-		 if(cancel) return;
+		 if(cancel) {
+		     document.querySelector("#ui").style.backgroundColor = "black"
+		     document.querySelector("#write-preventer").style.pointerEvents = "none"
+		     playing = false
+		     return;
+		 }
 		 await drawBlock(block, new_speed)
 		 await waitFor(block.time_after, new_speed)
 	     }
 	     document.querySelector("#ui").style.backgroundColor = "black"
+	     document.querySelector("#write-preventer").style.pointerEvents = "none"
 	     playing = false
 	 }
 	 
@@ -259,6 +272,8 @@
 	 var recording = false
 	 var playing = false
 	 document.addEventListener("keyup", (event) => {
+	     if(window.location.search.substr(1) != "modify")
+		 return;
 	     if(event.key == " " && !(event.target.tagName == "INPUT" && event.target.type == "text")){
 		 event.preventDefault()
 		 if(!playing) {
@@ -275,6 +290,8 @@
 	     }
 	 })
 	 document.addEventListener("keydown", (event) => {
+	     if(window.location.search.substr(1) != "modify")
+		 return;
 	     if(event.key == " " && !(event.target.tagName == "INPUT" && event.target.type == "text")){
 		 event.preventDefault()
 	     }
