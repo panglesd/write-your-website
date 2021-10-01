@@ -23,6 +23,9 @@
 		<button onclick="sketchpad.mode = 'erase'">Erase</button>
 		<input type="number" onchange="sketchpad.weight = parseFloat(this.value)" value="2">
 	    </div>
+	    <div>
+		Homepages: <input id="homepages-input" type="text" onchange="website.homepages = JSON.parse(this.value)">
+	    </div>
 	    <h2>Timeline</h2>
 	    <p>When you have selected a position in the timeline, press <span class="key">Space</span> to start recording, and <span class="key">Space</span> again to stop recording.</p>
 	    <button onclick="if(!recording){clearSketchpad(); drawPage(page, 1);}">Refresh</button>
@@ -91,13 +94,13 @@
 	 
 	 /* Recording stuff */
 
-	 var website = [{name: "ui", blocks: [], speed: 1}]
-	 var page = website[0]
+	 var website = {pages: [{name: "ui", blocks: [], speed: 1}], homepages:["ui"]}
+	 var page = website.pages[0]
 	 var current_index
 	 current_index = 0
 	 var activeBlockLinks
 	 activeBlockLinks = []
-	 setPage(website[0])
+	 setPage(website.pages[0])
 	 async function setPage(new_page) {
 	     /* clearSketchpad()*/
 	     page = new_page
@@ -318,7 +321,7 @@
 	     let f = async function() {
 		 for(const pageName of pageNames) {
 		     if(cancel) return;
-		     await drawPage(website.find((page) => page.name == pageName), 1)
+		     await drawPage(website.pages.find((page) => page.name == pageName), 1)
 		 }		 
 	     }
 	     cancel = true
@@ -427,7 +430,7 @@
 	     while(websiteInfo.firstChild){
 		 websiteInfo.removeChild(websiteInfo.firstChild);
 	     }
-	     for(const pageOf of website) {
+	     for(const pageOf of website.pages) {
 		 let button = document.createElement("button")
 		 button.innerText = pageOf.name
 		 button.addEventListener("click", (ev) => {
@@ -439,10 +442,12 @@
 	     button.innerText = "+"
 	     button.addEventListener("click", (ev) => {
 		 let new_page = {name: "No name", speed: 1, blocks: []}
-		 website.push(new_page)
+		 website.pages.push(new_page)
 		 setPage(new_page)
 	     })
 	     websiteInfo.appendChild(button)
+	     let homePagesInput = document.querySelector("#homepages-input")
+	     homePagesInput.value = JSON.stringify(website.homepages);
 	 }
 
 	 function save() {
@@ -462,7 +467,8 @@
 	 }
 	 function loadJSON(file) {
 	     website = JSON.parse(file);
-	     page = website[0]
+	     displayWebsiteInfo()
+	     page = website.pages[0]
 	     displayPageInfo()
 	     displayTimeline()
 	     displayWebsiteInfo()
@@ -497,7 +503,8 @@
 	 //   it is available
 	 fetchJSONFile('written-website.json', function(data){
 	     loadJSON(data);
-	     gotoPage(["ui","home"])
+	     if(window.location.search.substr(1) != "modify")
+		 gotoPage(website.homepages)
 	 });
 	 
 	</script>
